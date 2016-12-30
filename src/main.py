@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 import automationhat
 from settings import defaults
 
-app = Flask(__name__, static_url_path='', static_folder='build')
+app = Flask(__name__, static_url_path='', static_folder='ui/build')
 
 val = 0
 
