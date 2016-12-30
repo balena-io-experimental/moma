@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE = 'http://0.0.0.0:5000/api';
+const BASE = '/api';
 
 const fetch = (opts) => {
   return axios({
