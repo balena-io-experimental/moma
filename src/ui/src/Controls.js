@@ -14,7 +14,7 @@ class Controls extends Component {
             this.props.settings.RELAYS.map((o) => {
               return (
                 <div key={o.endpoint}>
-                  <Button endpoint={o.endpoint} text={o.name} />
+                  <Button endpoint={o.endpoint} text={o.name} interval={ this.props.settings.POLL_INT} />
                 </div>
               )
             })
@@ -24,7 +24,7 @@ class Controls extends Component {
             this.props.settings.ANALOGS.map((o) => {
               return (
                 <div key={o.endpoint}>
-                  <Analog endpoint={o.endpoint} text={o.name} interval={ this.props.settings.POLL_INT }/>
+                  <Analog endpoint={o.endpoint} text={o.name} interval={ this.props.settings.POLL_INT} />
                 </div>
               )
             })
@@ -35,6 +35,16 @@ class Controls extends Component {
               return (
                 <div key={o.endpoint}>
                   <Button endpoint={o.endpoint} text={o.name} attrs={ { disabled : true } } />
+                </div>
+              )
+            })
+          }
+          <h2>Outputs</h2>
+          {
+            this.props.settings.OUTPUTS.map((o) => {
+              return (
+                <div key={o.endpoint}>
+                  <Button endpoint={o.endpoint} text={o.name} />
                 </div>
               )
             })

@@ -11,21 +11,26 @@ class Analog extends Component {
     };
   }
 
+  update(endpoint) {
+    fetch({
+      endpoint : endpoint
+    })
+    .then((res) => {
+      if (res.status === 200) {
+        this.setState({
+          value : res.data.value,
+          date: new Date()
+        });
+      }
+    }).catch((err) => {
+      console.error(err)
+    })
+  }
+
   componentDidMount() {
+    this.update(this.props.endpoint)
     setInterval(() => {
-      fetch({
-        endpoint : `${this.props.endpoint}`
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          this.setState({
-            value : res.data.value,
-            date: new Date()
-          });
-        }
-      }).catch((err) => {
-        console.error(err)
-      })
+      this.update(this.props.endpoint)
     }, this.props.interval || 1000);
 
   }

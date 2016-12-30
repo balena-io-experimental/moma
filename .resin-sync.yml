@@ -2,7 +2,7 @@ local_resinos:
   app-name: moma
   build-triggers:
     - Dockerfile: d2637b7cc2e403621f9307aade0144aae873c216b4f6597a9c77a748cd40aa4c
-    - requirements.txt: 82ef9563cfb8c25739dd8225e680eb4077bf5bf6f95187ee5ea6f01b7d679472
+    - requirements.txt: c9de4877e26247f6e1e658d2171f5aade09bf71215709c174b4de2636cfcf182
   environment: []
 destination: /usr/src/app
 ignore:
