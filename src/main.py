@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import automationhat
 from settings import defaults
 
@@ -25,7 +25,8 @@ def root():
 def toggle(id):
     id_str = number_to_word(id)
     if id_str:
-        automationhat.relay[id_str].toggle()
+        if request.method == 'PUT':
+            automationhat.relay[id_str].toggle()
         return jsonify(active=automationhat.relay[id_str].read())
     else:
         return jsonify(result={"status": 500})
@@ -34,7 +35,8 @@ def toggle(id):
 def toggleOutput(id):
     id_str = number_to_word(id)
     if id_str:
-        automationhat.output[id_str].toggle()
+        if request.method == 'PUT':
+            automationhat.output[id_str].toggle()
         return jsonify(active=automationhat.output[id_str].read())
     else:
         return jsonify(result={"status": 500})
