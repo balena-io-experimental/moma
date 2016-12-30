@@ -19,7 +19,7 @@ class Analog extends Component {
       .then((res) => {
         if (res.status === 200) {
           this.setState({
-            reading : res.data.reading,
+            value : res.data.value,
             date: new Date()
           });
         }
@@ -33,7 +33,7 @@ class Analog extends Component {
   render() {
     return (
         <a>
-         { this.props.text } : { this.state.reading }
+         { this.props.text } : { this.state.value }
          <LastUpdated date={this.state.date} />
         </a>
     );

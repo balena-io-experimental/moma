@@ -1,6 +1,11 @@
 import axios from 'axios'
+let BASE = null;
 
-const BASE = '/api';
+if (process.env.NODE_ENV === 'development') {
+  BASE = 'http://192.168.1.117:80/api';
+} else {
+  BASE = '/api'
+}
 
 const fetch = (opts) => {
   return axios({
