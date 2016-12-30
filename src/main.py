@@ -1,5 +1,7 @@
 from flask import Flask, jsonify
 import automationhat
+from settings import defaults
+
 app = Flask(__name__, static_url_path='')
 
 val = 0
@@ -44,6 +46,9 @@ def readInput(id):
     else:
         return jsonify(result={"status": 500})
 
+@app.route("/api/settings")
+def settings():
+    return jsonify(defaults())
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
