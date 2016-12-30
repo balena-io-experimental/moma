@@ -14,6 +14,11 @@ body {
   border:none;
 }
 
+.analog {
+  margin-bottom: 10px;
+  display: block;
+}
+
 .active {
   background: green;
 }

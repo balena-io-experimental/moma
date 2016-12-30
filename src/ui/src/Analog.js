@@ -37,8 +37,8 @@ class Analog extends Component {
 
   render() {
     return (
-        <a>
-         { this.props.text } : { this.state.value }
+        <a className="analog">
+         { this.props.text }: <code>{ this.state.value }</code>
          <LastUpdated date={this.state.date} />
         </a>
     );
