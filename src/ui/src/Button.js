@@ -11,12 +11,13 @@ class Button extends Component {
     };
   }
 
-  componentDidMount() {
-    fetch({ endpoint : `${this.props.endpoint}` })
+  update(endpoint, method) {
+    fetch({ endpoint : endpoint, method: method })
     .then((res) => {
       if (res.status === 200) {
+        console.log(this.props.endpoint, res.data);
         this.setState({
-          isActive : res.data.active,
+          isActive : res.data.value,
           date: new Date()
         });
       }
@@ -25,22 +26,19 @@ class Button extends Component {
     })
   }
 
+  componentDidMount() {
+    this.update(this.props.endpoint, 'GET');
+    setInterval(() => {
+      this.update(this.props.endpoint, 'GET');
+    }, this.props.interval || 3000);
+  }
+
   render() {
     return (
       <p>
         <button className={`button ${this.state.isActive ? 'active' : 'inActive'}`}
         onClick={(e) => {
-          fetch({
-            endpoint: `${this.props.endpoint}`,
-            method: 'PUT'
-          }).then((data) => {
-            this.setState({
-              isActive : !this.state.isActive,
-              date: new Date()
-            });
-          }).catch((err) => {
-            console.error(err)
-          })
+          this.update(`${this.props.endpoint}`, 'PUT');
         }}
         {...this.props.attrs}>
         { this.props.text }

@@ -3,7 +3,7 @@ def defaults():
     "POLL_INT": 3000,
     "RELAYS": [
       {
-        "name": 'Pump outside house',
+        "name": 'relay 1',
         "endpoint": '/relay/1'
       },
       {
@@ -13,6 +13,20 @@ def defaults():
       {
         "name": 'relay 3',
         "endpoint": '/relay/3'
+      }
+    ],
+    "OUTPUTS": [
+      {
+        "name": 'output 1',
+        "endpoint": '/output/1'
+      },
+      {
+        "name": 'output 2',
+        "endpoint": '/output/2'
+      },
+      {
+        "name": 'output 3',
+        "endpoint": '/output/3'
       }
     ],
     "ANALOGS": [
