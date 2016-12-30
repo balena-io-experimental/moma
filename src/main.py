@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 import automationhat
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 val = 0
 
@@ -16,8 +16,8 @@ def number_to_word(id):
 
 
 @app.route("/")
-def hello():
-    return "Hello World!"
+def root():
+    return app.send_static_file('index.html')
 
 @app.route("/api/relay/<id>", methods=['PUT', 'GET'])
 def toggle(id):
