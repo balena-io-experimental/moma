@@ -29,7 +29,7 @@ def toggle(id):
     if id_str:
         if request.method == 'PUT':
             automationhat.relay[id_str].toggle()
-        return jsonify(active=automationhat.relay[id_str].read())
+        return jsonify(value=automationhat.relay[id_str].read())
     else:
         return jsonify(result={"status": 500})
 
@@ -39,7 +39,7 @@ def toggleOutput(id):
     if id_str:
         if request.method == 'PUT':
             automationhat.output[id_str].toggle()
-        return jsonify(active=automationhat.output[id_str].read())
+        return jsonify(value=automationhat.output[id_str].read())
     else:
         return jsonify(result={"status": 500})
 

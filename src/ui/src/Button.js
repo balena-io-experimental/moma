@@ -15,7 +15,7 @@ class Button extends Component {
     fetch({ endpoint : endpoint, method: method })
     .then((res) => {
       if (res.status === 200) {
-        // console.log(this.props.endpoint, res.data.value);
+        console.log(this.props.endpoint, res.data);
         this.setState({
           isActive : res.data.value,
           date: new Date()
