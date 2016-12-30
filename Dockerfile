@@ -17,9 +17,6 @@ RUN pip install -r /requirements.txt
 COPY ./autohat_install.sh install.sh
 RUN ./install.sh -y
 
-# RUN git clone https://github.com/pimoroni/automation-hat.git
-# RUN cd automation-hat/library && python3 setup.py install
-
 # This will copy all files in our root to the working  directory in the container
 COPY . ./
 

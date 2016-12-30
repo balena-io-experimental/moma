@@ -30,6 +30,15 @@ def toggle(id):
     else:
         return jsonify(result={"status": 500})
 
+@app.route("/api/output/<id>", methods=['PUT', 'GET'])
+def toggleOutput(id):
+    id_str = number_to_word(id)
+    if id_str:
+        automationhat.output[id_str].toggle()
+        return jsonify(active=automationhat.output[id_str].read())
+    else:
+        return jsonify(result={"status": 500})
+
 @app.route("/api/analog/<id>", methods=['GET'])
 def readAnalog(id):
     id_str = number_to_word(id)
