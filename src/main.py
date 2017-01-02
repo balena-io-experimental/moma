@@ -27,7 +27,11 @@ def number_to_word(id):
 
 def delayRelaySwitchOff(id_str):
     automationhat.relay[id_str].write(0)
-    print("switched off relay: ", id_str)
+    print "switched off relay: "+ id_str
+
+def delayOutputSwitchOff(id_str):
+    automationhat.output[id_str].write(0)
+    print "switched off output: "+ id_str
 
 @app.route('/', branch=True)
 def root(request):
@@ -36,7 +40,7 @@ def root(request):
     return f
 
 @app.route("/api/relay/<id>", methods=['PUT', 'GET'])
-def toggle(request, id):
+def toggleRelay(request, id):
     id_str = number_to_word(id)
     if id_str:
         if request.method == 'PUT':
@@ -46,13 +50,22 @@ def toggle(request, id):
         return json.dumps({"status": 500})
 
 @app.route("/api/relay/<id>/on", methods=['PUT', 'GET'])
-def on(request, id):
+def relayOn(request, id):
     id_str = number_to_word(id)
     delay = float(request.args.get('time', [-1])[0])
     if id_str:
         automationhat.relay[id_str].write(1)
         if delay > 0:
             reactor.callLater(delay, delayRelaySwitchOff, id_str)
+        return json.dumps({"value":automationhat.relay[id_str].read()})
+    else:
+        return json.dumps({"status": 500})
+
+@app.route("/api/relay/<id>/off", methods=['PUT', 'GET'])
+def relayOff(request, id):
+    id_str = number_to_word(id)
+    if id_str:
+        automationhat.relay[id_str].write(0)
         return json.dumps({"value":automationhat.relay[id_str].read()})
     else:
         return json.dumps({"status": 500})
@@ -64,6 +77,27 @@ def toggleOutput(request, id):
         if request.method == 'PUT':
             automationhat.output[id_str].toggle()
         return json.dumps({"value": automationhat.output[id_str].read()})
+    else:
+        return json.dumps({"status": 500})
+
+@app.route("/api/output/<id>/on", methods=['PUT', 'GET'])
+def outputOn(request, id):
+    id_str = number_to_word(id)
+    delay = float(request.args.get('time', [-1])[0])
+    if id_str:
+        automationhat.output[id_str].write(1)
+        if delay > 0:
+            reactor.callLater(delay, delayOutputSwitchOff, id_str)
+        return json.dumps({"value":automationhat.output[id_str].read()})
+    else:
+        return json.dumps({"status": 500})
+
+@app.route("/api/output/<id>/off", methods=['PUT', 'GET'])
+def outputOff(request, id):
+    id_str = number_to_word(id)
+    if id_str:
+        automationhat.output[id_str].write(0)
+        return json.dumps({"value":automationhat.output[id_str].read()})
     else:
         return json.dumps({"status": 500})
 
