@@ -49,6 +49,7 @@ def toggleRelay(request, id):
     else:
         return json.dumps({"status": 500})
 
+# URL/api/relay/1/on?time=10
 @app.route("/api/relay/<id>/on", methods=['PUT', 'GET'])
 def relayOn(request, id):
     id_str = number_to_word(id)
@@ -116,6 +117,71 @@ def readInput(request, id):
         return json.dumps({"value": automationhat.input[id_str].read()})
     else:
         return json.dumps({"status": 500})
+
+# TODO: find a better way to return the state, using settings.py
+@app.route("/api/state", methods=['GET'])
+def getState(request):
+    input = automationhat.input.read()
+    analog = automationhat.analog.read()
+    output = automationhat.output.read()
+    relay = automationhat.relay.read()
+    return json.dumps({"RELAYS": [
+      {
+        "name": 'relay 1',
+        "value": relay["one"]
+      },
+      {
+        "name": 'relay 2',
+        "value": relay["two"]
+      },
+      {
+        "name": 'relay 3',
+        "value": relay["three"]
+      }
+    ],
+    "OUTPUTS": [
+      {
+        "name": 'output 1',
+        "value": output["one"]
+      },
+      {
+        "name": 'output 2',
+        "value": output["two"]
+      },
+      {
+        "name": 'output 3',
+        "value": output["three"]
+      }
+    ],
+    "ANALOGS": [
+      {
+        "name": 'analog 1',
+        "value": analog["one"]
+      },
+      {
+        "name": 'analog 2',
+        "value": analog["two"]
+      },
+      {
+        "name": 'analog 3',
+        "value": analog["three"]
+      }
+    ],
+    "INPUTS": [
+      {
+        "name": 'input 1',
+        "value": input["one"]
+      },
+      {
+        "name": 'input 2',
+        "value": input["two"]
+      },
+      {
+        "name": 'input 3',
+        "value": input["three"]
+      }
+    ]
+    })
 
 @app.route("/api/settings")
 def settings(request):
