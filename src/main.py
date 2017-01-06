@@ -1,17 +1,12 @@
-# from flask import Flask, jsonify, request
-from klein import run, route, Klein
-from twisted.internet import defer, task, reactor
-from twisted.web.static import File
-import json
+from flask import Flask, jsonify, request
 
 import automationhat
 from settings import defaults
-# from flask_cors import CORS, cross_origin
+from flask_cors import CORS, cross_origin
+import json
 
-# app = Flask(__name__, static_url_path='', static_folder='ui/build')
-# CORS(app)
-
-app = Klein()
+app = Flask(__name__, static_url_path='', static_folder='ui/build')
+CORS(app)
 
 val = 0
 
@@ -33,14 +28,12 @@ def delayOutputSwitchOff(id_str):
     automationhat.output[id_str].write(0)
     print "switched off output: "+ id_str
 
-@app.route('/', branch=True)
-def root(request):
-    f = File("./src/ui/build/index.html")
-    f.isLeaf = True
-    return f
+@app.route('/')
+def root():
+    return app.send_static_file('index.html')
 
 @app.route("/api/relay/<id>", methods=['PUT', 'GET'])
-def toggleRelay(request, id):
+def toggleRelay(id):
     id_str = number_to_word(id)
     if id_str:
         if request.method == 'PUT':
@@ -50,20 +43,20 @@ def toggleRelay(request, id):
         return json.dumps({"status": 500})
 
 # URL/api/relay/1/on?time=10
-@app.route("/api/relay/<id>/on", methods=['PUT', 'GET'])
-def relayOn(request, id):
-    id_str = number_to_word(id)
-    delay = float(request.args.get('time', [-1])[0])
-    if id_str:
-        automationhat.relay[id_str].write(1)
-        if delay > 0:
-            reactor.callLater(delay, delayRelaySwitchOff, id_str)
-        return json.dumps({"value":automationhat.relay[id_str].read()})
-    else:
-        return json.dumps({"status": 500})
+# @app.route("/api/relay/<id>/on", methods=['PUT', 'GET'])
+# def relayOn(request, id):
+#     id_str = number_to_word(id)
+#     delay = float(request.args.get('time', [-1])[0])
+#     if id_str:
+#         automationhat.relay[id_str].write(1)
+#         if delay > 0:
+#             reactor.callLater(delay, delayRelaySwitchOff, id_str)
+#         return json.dumps({"value":automationhat.relay[id_str].read()})
+#     else:
+#         return json.dumps({"status": 500})
 
 @app.route("/api/relay/<id>/off", methods=['PUT', 'GET'])
-def relayOff(request, id):
+def relayOff(id):
     id_str = number_to_word(id)
     if id_str:
         automationhat.relay[id_str].write(0)
@@ -72,7 +65,7 @@ def relayOff(request, id):
         return json.dumps({"status": 500})
 
 @app.route("/api/output/<id>", methods=['PUT', 'GET'])
-def toggleOutput(request, id):
+def toggleOutput(id):
     id_str = number_to_word(id)
     if id_str:
         if request.method == 'PUT':
@@ -81,20 +74,20 @@ def toggleOutput(request, id):
     else:
         return json.dumps({"status": 500})
 
-@app.route("/api/output/<id>/on", methods=['PUT', 'GET'])
-def outputOn(request, id):
-    id_str = number_to_word(id)
-    delay = float(request.args.get('time', [-1])[0])
-    if id_str:
-        automationhat.output[id_str].write(1)
-        if delay > 0:
-            reactor.callLater(delay, delayOutputSwitchOff, id_str)
-        return json.dumps({"value":automationhat.output[id_str].read()})
-    else:
-        return json.dumps({"status": 500})
+# @app.route("/api/output/<id>/on", methods=['PUT', 'GET'])
+# def outputOn(request, id):
+#     id_str = number_to_word(id)
+#     delay = float(request.args.get('time', [-1])[0])
+#     if id_str:
+#         automationhat.output[id_str].write(1)
+#         if delay > 0:
+#             reactor.callLater(delay, delayOutputSwitchOff, id_str)
+#         return json.dumps({"value":automationhat.output[id_str].read()})
+#     else:
+#         return json.dumps({"status": 500})
 
 @app.route("/api/output/<id>/off", methods=['PUT', 'GET'])
-def outputOff(request, id):
+def outputOff(id):
     id_str = number_to_word(id)
     if id_str:
         automationhat.output[id_str].write(0)
@@ -103,7 +96,7 @@ def outputOff(request, id):
         return json.dumps({"status": 500})
 
 @app.route("/api/analog/<id>", methods=['GET'])
-def readAnalog(request, id):
+def readAnalog(id):
     id_str = number_to_word(id)
     if id_str:
         return json.dumps({"value": automationhat.analog[id_str].read()})
@@ -111,7 +104,7 @@ def readAnalog(request, id):
         return json.dumps({"status": 500})
 
 @app.route("/api/input/<id>", methods=['GET'])
-def readInput(request, id):
+def readInput(id):
     id_str = number_to_word(id)
     if id_str:
         return json.dumps({"value": automationhat.input[id_str].read()})
@@ -120,7 +113,7 @@ def readInput(request, id):
 
 # TODO: find a better way to return the state, using settings.py
 @app.route("/api/state", methods=['GET'])
-def getState(request):
+def getState():
     input = automationhat.input.read()
     analog = automationhat.analog.read()
     output = automationhat.output.read()
@@ -184,7 +177,7 @@ def getState(request):
     })
 
 @app.route("/api/settings")
-def settings(request):
+def settings():
     return json.dumps(defaults())
 
 if __name__ == "__main__":
