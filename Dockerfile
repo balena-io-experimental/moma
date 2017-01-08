@@ -3,7 +3,6 @@ FROM resin/raspberrypi3-python:2.7
 # use apt-get if you need to install dependencies,
 RUN apt-get update && apt-get install -yq \
 	python-smbus \
-	redis-server \
    	curl && \
    	apt-get clean && rm -rf /var/lib/apt/lists/*
 
