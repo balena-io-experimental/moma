@@ -5,7 +5,7 @@ class Analog extends Component {
   render() {
     return (
       <a className="analog">
-       { this.props.name }: <code>{ this.props.value }</code>
+       { this.props.label || this.props.name }: <code>{ this.props.value }</code>
       </a>
     );
   }

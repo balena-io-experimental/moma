@@ -61,10 +61,10 @@ class App extends Component {
         }
         <h2>Analogs</h2>
         {
-          data.ANALOGS.map((o) => {
+          data.ANALOGS.map((o, i) => {
             return (
               <div key={o.name}>
-                <Analog name={o.name} value={o.value} />
+                <Analog name={o.name} label={settings.ANALOGS[i]} value={o.value} />
               </div>
             )
           })
