@@ -51,7 +51,6 @@ class App extends Component {
         <h2>Relays</h2>
         {
           data.RELAYS.map((o, i) => {
-            console.log(o.name, o.value)
             return (
               <div key={o.name}>
                 <Button name={o.name} label={settings.RELAYS[i]}  value={o.value} />

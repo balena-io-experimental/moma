@@ -31,7 +31,6 @@ class Button extends Component {
   }
 
   render() {
-    console.log(this.props.name, this.state.value)
     return (
       <p>
         <button className={`button ${this.state.value ? 'active' : 'inActive'}`}
