@@ -46,7 +46,6 @@ class App extends Component {
   }
 
   loadData(data, settings) {
-    console.log('DATA', data)
     return(
       <div>
         <h2>Relays</h2>
@@ -103,7 +102,7 @@ class App extends Component {
           <LastUpdated date={this.state.lastUpdate} />
         </div>
         <div className="App-intro">
-        { _.isEmpty(this.state.data) ?  console.log('niks') : this.loadData(this.state.data, this.state.settings)}
+        { _.isEmpty(this.state.data) ?  <div>Loading...</div> : this.loadData(this.state.data, this.state.settings)}
         </div>
       </div>
     );

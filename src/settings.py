@@ -1,60 +1,10 @@
+import os
+
 def defaults():
     return({
     "POLL_INT": 3000,
-    "RELAYS": [
-      {
-        "name": 'relay 1',
-        "endpoint": '/relay/1'
-      },
-      {
-        "name": 'relay 2',
-        "endpoint": '/relay/2'
-      },
-      {
-        "name": 'relay 3',
-        "endpoint": '/relay/3'
-      }
-    ],
-    "OUTPUTS": [
-      {
-        "name": 'output 1',
-        "endpoint": '/output/1'
-      },
-      {
-        "name": 'output 2',
-        "endpoint": '/output/2'
-      },
-      {
-        "name": 'output 3',
-        "endpoint": '/output/3'
-      }
-    ],
-    "ANALOGS": [
-      {
-        "name": 'analog 1',
-        "endpoint": '/analog/1'
-      },
-      {
-        "name": 'analog 2',
-        "endpoint": '/analog/2'
-      },
-      {
-        "name": 'analog 3',
-        "endpoint": '/analog/3'
-      }
-    ],
-    "INPUTS": [
-      {
-        "name": 'input 1',
-        "endpoint": '/input/1'
-      },
-      {
-        "name": 'input 2',
-        "endpoint": '/input/2'
-      },
-      {
-        "name": 'input 3',
-        "endpoint": '/input/3'
-      }
-    ]
-    })
+	"RELAYS": [ os.environ.get('RELAY1'), os.environ.get('RELAY2'), os.environ.get('RELAY3') ],
+    "ANALOGS": [ os.environ.get('ANALOG1'), os.environ.get('ANALOG2'), os.environ.get('ANALOG3') ],
+    "INPUTS": [ os.environ.get('INPUT1'), os.environ.get('INPUT2') , os.environ.get('INPUT3') ],
+    "OUTPUTS": [ os.environ.get('OUPUT1'), os.environ.get('OUPUT2'), os.environ.get('OUPUT3') ]
+	})
