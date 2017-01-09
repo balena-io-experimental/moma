@@ -1,24 +1,28 @@
 import React, { Component } from 'react';
-import { fetch } from './api';
-import LastUpdated from './LastUpdated';
+import { fetch, createURL } from './api';
 
 class Button extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      date: new Date()
+      value: this.props.value
     };
+  }
+
+  // not sure if this is needed
+  componentWillReceiveProps(props) {
+    this.setState({
+      value : this.props.value
+    });
   }
 
   update(endpoint, method) {
     fetch({ endpoint : endpoint, method: method })
     .then((res) => {
       if (res.status === 200) {
-        console.log(this.props.endpoint, res.data);
         this.setState({
-          isActive : res.data.value,
-          date: new Date()
+          value : res.data.value
         });
       }
     }).catch((err) => {
@@ -26,24 +30,17 @@ class Button extends Component {
     })
   }
 
-  componentDidMount() {
-    this.update(this.props.endpoint, 'GET');
-    setInterval(() => {
-      this.update(this.props.endpoint, 'GET');
-    }, this.props.interval || 3000);
-  }
-
   render() {
+    console.log(this.props.name, this.state.value)
     return (
       <p>
-        <button className={`button ${this.state.isActive ? 'active' : 'inActive'}`}
+        <button className={`button ${this.state.value ? 'active' : 'inActive'}`}
         onClick={(e) => {
-          this.update(`${this.props.endpoint}`, 'PUT');
+          this.update(`${createURL(this.props.name)}`, 'PUT');
         }}
         {...this.props.attrs}>
-        { this.props.text }
+        { this.props.label || this.props.name }
         </button>
-        <LastUpdated date={this.state.date}/>
       </p>
     );
   }

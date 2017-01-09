@@ -2,7 +2,8 @@ import axios from 'axios'
 let BASE = null;
 
 if (process.env.NODE_ENV === 'development') {
-  BASE = 'http://192.168.1.117:80/api';
+  BASE = 'http://192.168.1.113:80/api';
+  BASE = 'http://localhost:5000/api'
 } else {
   BASE = '/api'
 }
@@ -20,4 +21,8 @@ const fetch = (opts) => {
   });
 }
 
-export { fetch }
+const createURL = (name) => {
+  return(`/${name.replace(' ', '/')}`)
+}
+
+export { fetch, createURL }
