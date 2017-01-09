@@ -10,13 +10,6 @@ class Button extends Component {
     };
   }
 
-  // not sure if this is needed
-  componentWillReceiveProps(props) {
-    this.setState({
-      value : this.props.value
-    });
-  }
-
   update(endpoint, method) {
     fetch({ endpoint : endpoint, method: method })
     .then((res) => {
