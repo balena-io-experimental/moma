@@ -24,4 +24,4 @@ COPY . ./
 # ENV INITSYSTEM on
 
 # main.py will run when container starts up on the device
-CMD ["python", "-u" ,"src/main.py"]
+CMD modprobe i2c-dev && python -u src/main.py
