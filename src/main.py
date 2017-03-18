@@ -33,7 +33,8 @@ CORS(app)
 val = 0
 
 def job1(a,b):
-    return print('Tick! The time is: %s' % datetime.now())
+    print('Tick! The time is: %s' % datetime.now())
+    return None
 
 def number_to_word(id):
     if int(id) == 1:
