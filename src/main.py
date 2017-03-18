@@ -17,14 +17,14 @@ class Config(object):
             'seconds': 3600
         }
     ]
-    # SCHEDULER_EXECUTORS = {
-    #     'default': {'type': 'threadpool', 'max_workers': 20}
-    # }
+    SCHEDULER_EXECUTORS = {
+        'default': {'type': 'threadpool', 'max_workers': 10}
+    }
 
-    # SCHEDULER_JOB_DEFAULTS = {
-    #     'coalesce': False,
-    #     'max_instances': 3
-    # }
+    SCHEDULER_JOB_DEFAULTS = {
+        'coalesce': False,
+        'max_instances': 3
+    }
     SCHEDULER_API_ENABLED = True
 
 app = Flask(__name__, static_url_path='', static_folder='ui/build')
@@ -33,7 +33,7 @@ CORS(app)
 val = 0
 
 def job1(a,b):
-    print('Tick! The time is: %s' % datetime.now())
+    return print('Tick! The time is: %s' % datetime.now())
 
 def number_to_word(id):
     if int(id) == 1:
@@ -82,7 +82,7 @@ def relayOn(id):
               scheduler.add_job(id=job_name, func=delayRelaySwitchOff, trigger='date', run_date=sched_time, args=[id_str])
             except:
               return json.dumps({"status": 500}, {"info": "Job already scheduled on this resource"})
-            
+
         return json.dumps({"value":automationhat.relay[id_str].read()})
     else:
         return json.dumps({"status": 500})
@@ -120,7 +120,7 @@ def outputOn(id):
               scheduler.add_job(id=job_name, func=delayOutputSwitchOff, trigger='date', run_date=sched_time, args=[id_str])
             except:
               return json.dumps({"status": 500}, {"info": "Job already scheduled on this resource"})
-            
+
         return json.dumps({"value":automationhat.output[id_str].read()})
     else:
         return json.dumps({"status": 500})
