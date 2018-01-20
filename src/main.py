@@ -3,7 +3,7 @@ from flask_apscheduler import APScheduler
 from datetime import date, datetime, timedelta
 import automationhat
 from flask_cors import CORS, cross_origin
-import json
+import json, os, subprocess
 from settings import defaults
 
 # Configure periodic jobs here.
@@ -47,8 +47,14 @@ def wifi_setup(a,b):
     if automationhat.input.three.read() == 1:
         print('Go into wifi AP mode')
         automationhat.light.comms.on()
+        if os.path.isfile("apmode"):
+            print('wifi-connect already running')
+        else:
+            subprocess.call(wifi-connect)
+            f = open('apmode','w')
     else:
         automationhat.light.comms.off()
+        os.remove("apmode")
 
     return None
 
@@ -243,4 +249,4 @@ if __name__ == "__main__":
 
   scheduler.init_app(app)
   scheduler.start()
-  app.run(host='0.0.0.0', port=80)
+  app.run(host='0.0.0.0', port=8080)
