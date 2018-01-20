@@ -15,6 +15,13 @@ class Config(object):
             'args': (1, 2),
             'trigger': 'interval',
             'seconds': 3600
+        },
+        {
+            'id': 'wifi_setup',
+            'func': 'main:wifi_setup',
+            'args': (1,1),
+            'trigger': 'interval',
+            'seconds': 10
         }
     ]
     SCHEDULER_EXECUTORS = {
@@ -34,6 +41,11 @@ val = 0
 
 def job1(a,b):
     print('Tick! The time is: %s' % datetime.now())
+    return None
+
+def wifi_setup(a,b):
+    print('Checking AP mode selection pin')
+    print(automationhat.input.read[2])
     return None
 
 def number_to_word(id):
