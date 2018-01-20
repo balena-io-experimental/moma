@@ -44,13 +44,11 @@ def job1(a,b):
     return None
 
 def wifi_setup(a,b):
-    print('Checking AP mode selection pin')
-    readings = automationhat.input.read()
-    if readings['three'] == 1:
+    if automationhat.input.three.read() == 1:
         print('Go into wifi AP mode')
-        automationhat.light.wifi.write(1)
+        automationhat.light.comms.on()
     else:
-        automationhat.light.wifi.write(0)
+        automationhat.light.comms.off()
 
     return None
 
