@@ -3,7 +3,7 @@ from flask_apscheduler import APScheduler
 from datetime import date, datetime, timedelta
 import automationhat
 from flask_cors import CORS, cross_origin
-import json, os, subprocess
+import json, os, subprocess, urllib2
 from settings import defaults
 
 # Configure periodic jobs here.
@@ -22,6 +22,13 @@ class Config(object):
             'args': (1,1),
             'trigger': 'interval',
             'seconds': 10
+        },
+        {
+            'id': 'check_internet',
+            'func': 'main:check_internet',
+            'args': (1,1),
+            'trigger': 'interval',
+            'seconds': 5
         }
     ]
     SCHEDULER_EXECUTORS = {
@@ -58,6 +65,18 @@ def wifi_setup(a,b):
         os.remove("apmode")
 
     return None
+
+def check_internet(a,b):
+    try:
+        header = {"pragma" : "no-cache"} # Tells the server to send fresh copy
+        req = urllib2.Request("http://www.google.com", headers=header)
+        response=urllib2.urlopen(req,timeout=2)
+        automationhat.light.warn.off()
+        return None
+    except urllib2.URLError as err:
+        automationhat.light.warn.on()
+        print err
+        return None
 
 def number_to_word(id):
     if int(id) == 1:
@@ -177,7 +196,7 @@ def readInput(id):
 # TODO: find a better way to return the state, using settings.py
 @app.route("/api/state", methods=['GET'])
 def getState():
-    input = automationhat.input.read()
+    inputs = automationhat.input.read()
     analog = automationhat.analog.read()
     output = automationhat.output.read()
     relay = automationhat.relay.read()
@@ -226,15 +245,15 @@ def getState():
     "INPUTS": [
       {
         "name": 'input 1',
-        "value": input["one"]
+        "value": inputs["one"]
       },
       {
         "name": 'input 2',
-        "value": input["two"]
+        "value": inputs["two"]
       },
       {
         "name": 'input 3',
-        "value": input["three"]
+        "value": inputs["three"]
       }
     ]
     })
