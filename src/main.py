@@ -50,8 +50,9 @@ def wifi_setup(a,b):
         if os.path.isfile("apmode"):
             print('wifi-connect already running')
         else:
-            subprocess.call(wifi-connect)
             f = open('apmode','w')
+            print("Starting wifi-connect")
+            subprocess.call(["wifi-connect","--ui-directory=/usr/src/app/ui"])
     else:
         automationhat.light.comms.off()
         os.remove("apmode")
