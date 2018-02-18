@@ -4,9 +4,9 @@ import moment from 'moment';
 class LastUpdated extends Component {
   render() {
     return(
-      <span className="date">
+      <p className="date">
         Last updated: { moment(this.props.date).format('h:mm:ss a') }
-      </span>
+      </p>
     )
   }
 }

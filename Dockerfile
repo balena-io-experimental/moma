@@ -3,6 +3,7 @@ FROM resin/raspberrypi3-python:2.7
 # use apt-get if you need to install dependencies,
 RUN apt-get update && apt-get install -yq \
 	python-smbus \
+	dnsmasq \
    	curl && \
    	apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -17,11 +18,12 @@ RUN pip install -r /requirements.txt
 COPY ./autohat_install.sh install.sh
 RUN ./install.sh -y
 
+ADD wifi-connect-linux-armv7hf.tar.gz .
+RUN mv wifi-connect /usr/bin/wifi-connect
 # This will copy all files in our root to the working  directory in the container
 COPY . ./
 
-# switch on systemd init system in container
-# ENV INITSYSTEM on
+ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 
 # main.py will run when container starts up on the device
 CMD modprobe i2c-dev && python -u src/main.py

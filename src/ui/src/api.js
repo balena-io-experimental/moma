@@ -1,8 +1,8 @@
 import axios from 'axios'
-let BASE = null;
+let BASE;
 
 if (process.env.NODE_ENV === 'development') {
-  BASE = 'http://192.168.1.113:80/api';
+  BASE = 'http://<IP>:<port>/api';
 } else {
   BASE = '/api'
 }

@@ -3,7 +3,7 @@ from flask_apscheduler import APScheduler
 from datetime import date, datetime, timedelta
 import automationhat
 from flask_cors import CORS, cross_origin
-import json
+import json, os, subprocess, urllib2
 from settings import defaults
 
 # Configure periodic jobs here.
@@ -15,16 +15,30 @@ class Config(object):
             'args': (1, 2),
             'trigger': 'interval',
             'seconds': 3600
+        },
+        {
+            'id': 'wifi_setup',
+            'func': 'main:wifi_setup',
+            'args': (1,1),
+            'trigger': 'interval',
+            'seconds': 10
+        },
+        {
+            'id': 'check_internet',
+            'func': 'main:check_internet',
+            'args': (1,1),
+            'trigger': 'interval',
+            'seconds': 5
         }
     ]
-    # SCHEDULER_EXECUTORS = {
-    #     'default': {'type': 'threadpool', 'max_workers': 20}
-    # }
+    SCHEDULER_EXECUTORS = {
+        'default': {'type': 'threadpool', 'max_workers': 10}
+    }
 
-    # SCHEDULER_JOB_DEFAULTS = {
-    #     'coalesce': False,
-    #     'max_instances': 3
-    # }
+    SCHEDULER_JOB_DEFAULTS = {
+        'coalesce': False,
+        'max_instances': 3
+    }
     SCHEDULER_API_ENABLED = True
 
 app = Flask(__name__, static_url_path='', static_folder='ui/build')
@@ -34,6 +48,35 @@ val = 0
 
 def job1(a,b):
     print('Tick! The time is: %s' % datetime.now())
+    return None
+
+def wifi_setup(a,b):
+    if automationhat.input.three.read() == 1:
+        print('Go into wifi AP mode')
+        automationhat.light.comms.on()
+        if os.path.isfile("apmode"):
+            print('wifi-connect already running')
+        else:
+            f = open('apmode','w')
+            print("Starting wifi-connect")
+            subprocess.call(["wifi-connect","--ui-directory=/usr/src/app/ui"])
+    else:
+        automationhat.light.comms.off()
+        os.remove("apmode")
+
+    return None
+
+def check_internet(a,b):
+    try:
+        header = {"pragma" : "no-cache"} # Tells the server to send fresh copy
+        req = urllib2.Request("http://www.google.com", headers=header)
+        response=urllib2.urlopen(req,timeout=2)
+        automationhat.light.warn.off()
+        return None
+    except urllib2.URLError as err:
+        automationhat.light.warn.on()
+        print err
+        return None
 
 def number_to_word(id):
     if int(id) == 1:
@@ -82,7 +125,7 @@ def relayOn(id):
               scheduler.add_job(id=job_name, func=delayRelaySwitchOff, trigger='date', run_date=sched_time, args=[id_str])
             except:
               return json.dumps({"status": 500}, {"info": "Job already scheduled on this resource"})
-            
+
         return json.dumps({"value":automationhat.relay[id_str].read()})
     else:
         return json.dumps({"status": 500})
@@ -120,7 +163,7 @@ def outputOn(id):
               scheduler.add_job(id=job_name, func=delayOutputSwitchOff, trigger='date', run_date=sched_time, args=[id_str])
             except:
               return json.dumps({"status": 500}, {"info": "Job already scheduled on this resource"})
-            
+
         return json.dumps({"value":automationhat.output[id_str].read()})
     else:
         return json.dumps({"status": 500})
@@ -153,7 +196,7 @@ def readInput(id):
 # TODO: find a better way to return the state, using settings.py
 @app.route("/api/state", methods=['GET'])
 def getState():
-    input = automationhat.input.read()
+    inputs = automationhat.input.read()
     analog = automationhat.analog.read()
     output = automationhat.output.read()
     relay = automationhat.relay.read()
@@ -202,15 +245,15 @@ def getState():
     "INPUTS": [
       {
         "name": 'input 1',
-        "value": input["one"]
+        "value": inputs["one"]
       },
       {
         "name": 'input 2',
-        "value": input["two"]
+        "value": inputs["two"]
       },
       {
         "name": 'input 3',
-        "value": input["three"]
+        "value": inputs["three"]
       }
     ]
     })
@@ -226,4 +269,4 @@ if __name__ == "__main__":
 
   scheduler.init_app(app)
   scheduler.start()
-  app.run(host='0.0.0.0', port=80)
+  app.run(host='0.0.0.0', port=8080)
