@@ -9,7 +9,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      settings: {}
+      settings: {},
+      editing: false
     }
   }
 
@@ -19,7 +20,6 @@ class App extends Component {
       return this.getData();
     })
     .then(() => {
-      console.log(this.state.data)
       setInterval(() => {
         this.getData();
       }, this.state.settings.POLL_INT || 1000);
@@ -46,6 +46,8 @@ class App extends Component {
   }
 
   loadData(data, settings) {
+    const { editing } = this.state
+
     return(
       <div>
         <h2>Relays</h2>
@@ -53,7 +55,7 @@ class App extends Component {
           data.RELAYS.map((o, i) => {
             return (
               <div key={o.name}>
-                <Button name={o.name} label={settings.RELAYS[i]}  value={o.value} />
+                <Button name={o.name} label={settings.RELAYS[i]}  value={o.value} attrs={{ disabled: !editing }}/>
               </div>
             )
           })
@@ -63,7 +65,7 @@ class App extends Component {
           data.ANALOGS.map((o, i) => {
             return (
               <div key={o.name}>
-                <Analog name={o.name} label={settings.ANALOGS[i]} value={o.value} />
+                <Analog name={o.name} label={settings.ANALOGS[i]} value={o.value} attrs={{ disabled: !editing }}/>
               </div>
             )
           })
@@ -83,7 +85,7 @@ class App extends Component {
           data.OUTPUTS.map((o, i) => {
             return (
               <div key={o.name}>
-                <Button name={o.name} label={settings.OUTPUTS[i]} value={o.value} id={o.name} />
+                <Button name={o.name} label={settings.OUTPUTS[i]} value={o.value} id={o.name} attrs={{ disabled: !editing }}/>
               </div>
             )
           })
@@ -99,6 +101,9 @@ class App extends Component {
         <div className="App-header">
           <h2>Moma</h2>
           <LastUpdated date={this.state.lastUpdate} />
+          <div>  
+            <button className={`button ${ !this.state.editing ? 'active': 'inActive'}`} onClick={() => { this.setState((prevState) => ({ editing: !prevState.editing })) }}>{ this.state.editing ? 'Stop' : 'Start' } editing</button>
+          </div>
         </div>
         <div className="App-intro">
         { _.isEmpty(this.state.data) ?  <div>Loading...</div> : this.loadData(this.state.data, this.state.settings)}
